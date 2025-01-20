@@ -61,9 +61,10 @@ def add_saved():
     if "tags" not in req_json:
         req_json["tags"] = {}
     saved.delete_one({"key": req_json["key"]})
-    saved_id = saved.insert(req_json)
+    saved_id = saved.insert_one(req_json).inserted_id  # Aquí cambiamos insert() por insert_one()
     new_saved = saved.find_one({"_id": saved_id})
     return jsonify({"result": saved_format(new_saved)})
+
 
 
 @app.route("/api/update", methods=["PUT"])

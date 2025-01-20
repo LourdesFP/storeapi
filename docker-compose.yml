@@ -7,7 +7,7 @@ services:
     ports:
       - "5000:5000"  # Expone la app en el puerto 5000
     environment:
-      - MONGO_URI=mongodb://mongo:27017  # MongoDB en el servicio "mongo"
+      - MONGO_URI=mongodb://127.0.0.1:27017  # MongoDB en el servicio "mongo"
       - MONGO_DB=restdb
     depends_on:
       - mongo  # Espera a que el servicio "mongo" esté listo
