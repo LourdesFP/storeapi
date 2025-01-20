@@ -1,23 +1,30 @@
-version: "3.9"
+version: '3.8'
+
 services:
   api:
-    build:
-      context: .
-      dockerfile: ./dockerfile
+    build: .
+    container_name: flask-api
     ports:
-      - "5000:5000"  # Expone la app en el puerto 5000
+      - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://127.0.0.1:27017  # MongoDB en el servicio "mongo"
+      - MONGO_URI=mongodb://mongo:27017
       - MONGO_DB=restdb
     depends_on:
-      - mongo  # Espera a que el servicio "mongo" esté listo
+      - mongo
+    networks:
+      - flask-mongo-net
+
   mongo:
-    image: mongo:6.0  # Usa la imagen oficial de MongoDB
-    container_name: mongo
-    ports:
-      - "27017:27017"  # Expone MongoDB en el puerto 27017
+    image: mongo:latest
+    container_name: mongo-db
     volumes:
-      - mongo_data:/data/db  # Persistencia de datos
+      - mongo_data:/data/db
+    networks:
+      - flask-mongo-net
+
+networks:
+  flask-mongo-net:
+    driver: bridge
 
 volumes:
   mongo_data:

@@ -22,21 +22,10 @@ def saved_format(req):
     else:
         return req
 
-@app.route("/", methods=["GET"])
-def home():
-    return jsonify({
-        "message": "Welcome to the RESTful API!",
-        "endpoints": {
-            "/api/get": "GET all keys",
-            "/api/get/<key>": "GET a specific key",
-            "/api/add": "POST to add or replace a key",
-            "/api/update": "PUT to update or merge a key"
-        }
-    })
 
 @app.route("/api/get", methods=["GET"])
 def get_all_saved():
-    saved = mongo.db["saved"]
+    saved = mongo.db.saved
     output = []
     for s in saved.find():
         output.append(saved_format(s))
@@ -45,7 +34,7 @@ def get_all_saved():
 
 @app.route("/api/get/<key>", methods=["GET"])
 def get_one_saved(key):
-    saved = mongo.db["saved"]
+    saved = mongo.db.saved
     s = saved.find_one({"key": key})
     if not s:
         output = {"No such key"}
@@ -54,22 +43,21 @@ def get_one_saved(key):
 
 @app.route("/api/add", methods=["POST"])
 def add_saved():
-    saved = mongo.db["saved"]
+    saved = mongo.db.saved
     req_json = request.get_json()
     if "key" not in req_json:
         return ("ERROR empty key", 400)
     if "tags" not in req_json:
         req_json["tags"] = {}
     saved.delete_one({"key": req_json["key"]})
-    saved_id = saved.insert_one(req_json).inserted_id  # Aquí cambiamos insert() por insert_one()
+    saved_id = saved.insert(req_json)
     new_saved = saved.find_one({"_id": saved_id})
     return jsonify({"result": saved_format(new_saved)})
 
 
-
 @app.route("/api/update", methods=["PUT"])
 def update_saved():
-    saved = mongo.db["saved"]
+    saved = mongo.db.saved
     req_json = request.get_json()
     if "key" not in req_json:
         return ("ERROR empty key", 400)
@@ -88,4 +76,4 @@ def update_saved():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host=0.0.0.0 , debug=True)
