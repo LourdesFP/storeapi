@@ -8,6 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 #Install dependencies specified in requirements.txt.
+RUN apt-get update
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the project source code from the local host to the filesystem of the container at the working directory.
