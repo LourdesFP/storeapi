@@ -36,7 +36,7 @@ def home():
 
 @app.route("/api/get", methods=["GET"])
 def get_all_saved():
-    saved = mongo.db.saved
+    saved = mongo.db["saved"]
     output = []
     for s in saved.find():
         output.append(saved_format(s))
@@ -45,7 +45,7 @@ def get_all_saved():
 
 @app.route("/api/get/<key>", methods=["GET"])
 def get_one_saved(key):
-    saved = mongo.db.saved
+    saved = mongo.db["saved"]
     s = saved.find_one({"key": key})
     if not s:
         output = {"No such key"}
@@ -54,7 +54,7 @@ def get_one_saved(key):
 
 @app.route("/api/add", methods=["POST"])
 def add_saved():
-    saved = mongo.db.saved
+    saved = mongo.db["saved"]
     req_json = request.get_json()
     if "key" not in req_json:
         return ("ERROR empty key", 400)
@@ -68,7 +68,7 @@ def add_saved():
 
 @app.route("/api/update", methods=["PUT"])
 def update_saved():
-    saved = mongo.db.saved
+    saved = mongo.db["saved"]
     req_json = request.get_json()
     if "key" not in req_json:
         return ("ERROR empty key", 400)
