@@ -22,6 +22,17 @@ def saved_format(req):
     else:
         return req
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({
+        "message": "Welcome to the RESTful API!",
+        "endpoints": {
+            "/api/get": "GET all keys",
+            "/api/get/<key>": "GET a specific key",
+            "/api/add": "POST to add or replace a key",
+            "/api/update": "PUT to update or merge a key"
+        }
+    })
 
 @app.route("/api/get", methods=["GET"])
 def get_all_saved():
